@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Викторина: Кто ты из книги "История Аллана Уэйна"?</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Lora', serif;
+            background-color: #1a1a1a;
+            background-image: url('https://www.transparenttextures.com/patterns/dark-leather.png');
+            color: #e0e0e0;
+        }
+
+        h1, h2, h3 {
+            font-family: 'Cinzel Decorative', cursive;
+            text-shadow: 0 0 8px rgba(220, 180, 130, 0.7);
+        }
+
+        .quiz-container {
+            background-color: rgba(10, 5, 5, 0.75);
+            border: 2px solid #4a3a2a;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.8), inset 0 0 15px rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+        }
+
+        .answer-btn, .restart-btn {
+            font-family: 'Lora', serif;
+            background-color: #3a2d20;
+            border: 1px solid #64503c;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+            font-size: 0.95rem;
+        }
+
+        .answer-btn:hover {
+            background-color: #8b6b4a;
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(220, 180, 130, 0.3);
+        }
+        
+        .restart-btn {
+             background-color: #6d2828;
+             border-color: #b94a4a;
+        }
+        
+        .restart-btn:hover {
+            background-color: #a53c3c;
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(220, 130, 130, 0.3);
+        }
+
+        #result-card {
+            border-image-source: url('data:image/svg+xml;utf8,<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><style>path{fill:%234a3a2a;}</style><path d="M 0 0 L 100 0 L 100 2 L 0 2 M 0 0 L 2 0 L 2 100 L 0 100 M 98 0 L 100 0 L 100 100 L 98 100 M 0 98 L 100 98 L 100 100 L 0 100 Z M 10 10 C 5 10, 5 5, 10 5 S 15 10, 10 10 M 90 10 C 85 10, 85 5, 90 5 S 95 10, 90 10 M 10 90 C 5 90, 5 85, 10 85 S 15 90, 10 90 M 90 90 C 85 90, 85 85, 90 85 S 95 90, 90 90 Z" /></svg>');
+            border-image-slice: 10;
+            border-image-repeat: round;
+            border-width: 10px;
+            border-style: solid;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4 sm:p-6">
+
+    <div id="quiz" class="quiz-container w-full max-w-2xl mx-auto p-6 md:p-8 rounded-lg">
+        <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold text-center text-amber-200 mb-6">Кто ты из книги "История Аллана Уэйна"?</h1>
+
+        <div id="question-container" class="space-y-6">
+            <h2 id="question" class="text-lg sm:text-xl md:text-2xl text-center text-gray-300"></h2>
+            <div id="answers" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <!-- Кнопки ответов будут здесь -->
+            </div>
+        </div>
+
+        <div id="result-container" class="hidden text-center">
+            <h2 class="text-xl sm:text-2xl md:text-3xl text-amber-100 mb-4">Вы больше всего похожи на...</h2>
+            <div id="result-card" class="bg-black/30 p-6 rounded-md">
+                <h3 id="result-name" class="text-2xl sm:text-3xl md:text-4xl font-bold text-amber-300 mb-4"></h3>
+                <p id="result-description" class="text-gray-300 text-left text-base sm:text-lg"></p>
+            </div>
+        </div>
+        
+        <div class="mt-8 text-center">
+             <button id="restart-btn" class="restart-btn hidden text-white font-bold py-2 px-6 rounded-lg">Пройти еще раз</button>
+        </div>
+    </div>
+
+    <script>
+        // --- Данные для викторины ---
+
+        const quizData = [
+            {
+                question: "В темном переулке вы слышите крик о помощи. Ваши действия?",
+                answers: [
+                    { text: "Осторожно пойду посмотреть, чем можно помочь, уповая на защиту Господа.", character: "allan" },
+                    { text: "Усмехнусь. Вероятно, это ловушка. Но скука — худший враг, так что я загляну.", character: "alexander" },
+                    { text: "Найду тяжелый предмет для самообороны и отправлюсь на помощь. Нельзя оставаться в стороне.", character: "marie" },
+                    { text: "Достану оружие и без колебаний пойду разбираться. Это моя работа.", character: "mora" }
+                ]
+            },
+            {
+                question: "Какое знание для вас наиболее ценно?",
+                answers: [
+                    { text: "Знание человеческой души, сострадание и вера.", character: "allan" },
+                    { text: "Секреты вечности, скрытые от глаз смертных, и искусство.", character: "alexander" },
+                    { text: "Правда, какой бы горькой она ни была. Нужно докопаться до сути.", character: "marie" },
+                    { text: "Практические навыки выживания и знание слабостей врага.", character: "mora" }
+                ]
+            },
+            {
+                question: "Столкнувшись с необъяснимым и пугающим явлением, ваша первая реакция?",
+                answers: [
+                    { text: "Молитва и попытка найти рациональное объяснение, даже если страшно.", character: "allan" },
+                    { text: "Любопытство. Наконец-то что-то интересное!", character: "alexander" },
+                    { text: "Гнев и решимость выяснить, что происходит, и противостоять этому.", character: "marie" },
+                    { text: "Хладнокровный анализ ситуации и подготовка к бою.", character: "mora" }
+                ]
+            },
+            {
+                question: "Как вы относитесь к своему болезненному прошлому?",
+                answers: [
+                    { text: "Пытаюсь найти в нем высший смысл и простить обидчиков.", character: "allan" },
+                    { text: "Скрываю его за маской иронии и цинизма.", character: "alexander" },
+                    { text: "Оно питает мою жажду справедливости и дает силы двигаться вперед.", character: "marie" },
+                    { text: "Прошлое не имеет значения. Важно лишь то, что я делаю сейчас.", character: "mora" }
+                ]
+            },
+            {
+                question: "Какое место вам больше по душе?",
+                answers: [
+                    { text: "Тихая церковь или старинная библиотека, где можно побыть наедине с мыслями.", character: "allan" },
+                    { text: "Роскошный особняк, богемный салон или любое место, где кипит жизнь.", character: "alexander" },
+                    { text: "Родовое поместье, полное тайн и воспоминаний.", character: "marie" },
+                    { text: "Тренировочный зал или глухой лес, где можно отточить свои навыки.", character: "mora" }
+                ]
+            },
+            {
+                question: "Вы узнаете ужасную тайну о человеке, которого уважаете. Что вы сделаете?",
+                answers: [
+                    { text: "Буду терзаться сомнениями, пытаясь понять его мотивы и найти путь к прощению.", character: "allan" },
+                    { text: "Использую эту информацию в своих целях, когда придет время.", character: "alexander" },
+                    { text: "Разоблачу его, если это поможет восстановить справедливость.", character: "marie" },
+                    { text: "Оценю, насколько эта тайна важна для моей миссии. Личные чувства второстепенны.", character: "mora" }
+                ]
+            },
+            {
+                question: "Ваше главное оружие в борьбе со злом?",
+                answers: [
+                    { text: "Вера и доброе сердце, способное растопить даже лед.", character: "allan" },
+                    { text: "Острый ум, многовековой опыт и сверхъестественные способности.", character: "alexander" },
+                    { text: "Несгибаемая воля и готовность пожертвовать собой ради правды.", character: "marie" },
+                    { text: "Хорошо заточенный клинок и отточенные боевые навыки.", character: "mora" }
+                ]
+            },
+             {
+                question: "Как вы относитесь к правилам и законам?",
+                answers: [
+                    { text: "Я стараюсь им следовать, ведь они установлены для общего блага.", character: "allan" },
+                    { text: "Правила созданы для того, чтобы их изящно нарушать.", character: "alexander" },
+                    { text: "Я буду следовать им, пока они не противоречат моим понятиям о справедливости.", character: "marie" },
+                    { text: "Я следую своему кодексу. Он важнее любых писаных законов.", character: "mora" }
+                ]
+            }
+        ];
+
+        const characters = {
+            allan: {
+                name: "Аллан Уэйн",
+                description: "Вы — Аллан Уэйн. Ваше сердце полно сострадания и веры. Вы стремитесь помогать другим, даже когда сталкиваетесь с ужасом и собственными страхами. Ваш путь — это путь духовного роста, преодоления сомнений и обретения внутренней силы. Вы — свет во тьме, тот, кто ищет добро даже в самых безнадежных ситуациях."
+            },
+            alexander: {
+                name: "Александр Томеску",
+                description: "Вы — Александр Томеску. Древнее, харизматичное и невероятно умное существо. За маской цинизма и показного легкомыслия вы скрываете глубокую боль и многовековое одиночество. Вас привлекает все необычное, вы цените искусство и красоту, а скука для вас — худшее из проклятий. Вы опасный союзник и еще более опасный враг."
+            },
+            marie: {
+                name: "Мари Томеску",
+                description: "Вы — Мари Томеску. За внешней хрупкостью в вас скрывается несгибаемая воля и стальной характер. Вы не боитесь смотреть правде в глаза и готовы бороться за то, во что верите, до самого конца. Горе сделало вас сильнее, а жажда справедливости ведет вас сквозь тьму. Вы — роза с очень острыми шипами."
+            },
+            mora: {
+                name: "Морайн Морган",
+                description: "Вы — Морайн 'Мора' Морган. Вы — настоящий Охотник. Прагматичный, решительный и невероятно умелый боец. Вы не тратите время на пустые разговоры и всегда идете прямо к цели. Для вас долг и работа превыше всего. Вы — тот человек, которого каждый хотел бы видеть на своей стороне в самой безнадежной битве."
+            }
+        };
+
+        // --- Логика викторины ---
+
+        const questionElement = document.getElementById('question');
+        const answersElement = document.getElementById('answers');
+        const questionContainer = document.getElementById('question-container');
+        const resultContainer = document.getElementById('result-container');
+        const restartBtn = document.getElementById('restart-btn');
+
+        let currentQuestionIndex = 0;
+        let scores = {
+            allan: 0,
+            alexander: 0,
+            marie: 0,
+            mora: 0
+        };
+        
+        // Функция для перемешивания массива (алгоритм Фишера-Йетса)
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function startQuiz() {
+            currentQuestionIndex = 0;
+            scores = { allan: 0, alexander: 0, marie: 0, mora: 0 };
+            questionContainer.classList.remove('hidden');
+            resultContainer.classList.add('hidden');
+            restartBtn.classList.add('hidden');
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const currentQuestion = quizData[currentQuestionIndex];
+            const shuffledAnswers = shuffleArray([...currentQuestion.answers]); // Копируем и перемешиваем
+            
+            questionElement.textContent = currentQuestion.question;
+            answersElement.innerHTML = '';
+
+            shuffledAnswers.forEach(answer => {
+                const button = document.createElement('button');
+                button.textContent = answer.text;
+                button.classList.add('answer-btn', 'w-full', 'p-3', 'rounded-lg', 'text-white');
+                button.onclick = () => selectAnswer(answer.character);
+                answersElement.appendChild(button);
+            });
+        }
+
+        function selectAnswer(character) {
+            scores[character]++;
+            currentQuestionIndex++;
+
+            if (currentQuestionIndex < quizData.length) {
+                showQuestion();
+            } else {
+                showResult();
+            }
+        }
+
+        function showResult() {
+            questionContainer.classList.add('hidden');
+            resultContainer.classList.remove('hidden');
+            restartBtn.classList.remove('hidden');
+
+            let maxScore = -1;
+            let resultCharacterKey = '';
+            for (const character in scores) {
+                if (scores[character] > maxScore) {
+                    maxScore = scores[character];
+                    resultCharacterKey = character;
+                }
+            }
+            
+            // Если есть ничья, выбираем случайно одного из победителей
+            const winners = Object.keys(scores).filter(key => scores[key] === maxScore);
+            if (winners.length > 1) {
+                resultCharacterKey = winners[Math.floor(Math.random() * winners.length)];
+            }
+
+            const resultCharacter = characters[resultCharacterKey];
+            document.getElementById('result-name').textContent = resultCharacter.name;
+            document.getElementById('result-description').textContent = resultCharacter.description;
+        }
+
+        restartBtn.addEventListener('click', startQuiz);
+
+        // --- Запуск викторины ---
+        startQuiz();
+    </script>
+</body>
+</html>
